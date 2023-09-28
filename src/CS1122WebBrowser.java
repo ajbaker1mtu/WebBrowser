@@ -14,6 +14,7 @@ import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -46,7 +47,7 @@ public class CS1122WebBrowser extends Application {
 	// These variables are included to get you started.
 	private Stage primaryStage = null;
 	private BorderPane borderPane = null;
-  private WebView view = null;
+  	private WebView view = null;
 	private WebEngine webEngine = null;
 	private TextField statusbar = null;
 
@@ -105,8 +106,29 @@ public class CS1122WebBrowser extends Application {
 	 */
 	@Override
 	public void start(Stage stage) {
-		// Build your window here.
+
+		borderPane = new BorderPane();
+		TextField search = new TextField();
+
+		HBox tBox = new HBox(search);
+
+		tBox.setAlignment(Pos.CENTER);
+		HBox.setHgrow(search, Priority.ALWAYS);
+		search.setMaxWidth(Double.MAX_VALUE);
+
+		borderPane.setTop(tBox);
+
+
+
+
+		Scene scene = new Scene(borderPane, 400, 400 );
+		stage.setTitle("g");
+		stage.setScene(scene);
+		stage.show();
+
 	}
+
+
 
 	/**
 	 * The main( ) method is ignored in JavaFX applications.
