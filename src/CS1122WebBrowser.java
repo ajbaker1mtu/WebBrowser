@@ -23,10 +23,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebEvent;
 import javafx.scene.web.WebView;
@@ -110,18 +108,46 @@ public class CS1122WebBrowser extends Application {
 		borderPane = new BorderPane();
 		TextField search = new TextField();
 
-		HBox tBox = new HBox(search);
+		Insets inset = new Insets(0, 20, 0, 15);
+
+		Button buttonBack = new Button("  Back  ");
+		Button buttonForward = new Button("Forward");
+		Button buttonHelp = new Button("Help");
+
+		HBox tBox = new HBox(buttonBack, buttonForward, search, buttonHelp);
 
 		tBox.setAlignment(Pos.CENTER);
 		HBox.setHgrow(search, Priority.ALWAYS);
 		search.setMaxWidth(Double.MAX_VALUE);
 
+		HBox.setMargin(search, inset);
+		HBox.setMargin(buttonBack, new Insets(0, 0, 0, 150));
+
+		tBox.setMaxHeight(75);
+		tBox.setPrefHeight(75);
+
+
+		tBox.setBackground(
+				new Background(
+				new BackgroundFill(Color.GRAY,
+				CornerRadii.EMPTY,
+				Insets.EMPTY ) ) );
+
+		Pane webPane = new Pane(makeHtmlView());
+
 		borderPane.setTop(tBox);
+		tBox.setSpacing(12);
+		tBox.setFillHeight(false);
+		HBox.setMargin(buttonBack, Insets.EMPTY);
+		webEngine.load("https://www.google.com/search?q=how+to+make+a+button+bigger+javafx&oq=how+to+make+a+button+bigger+javafx&gs_lcrp=EgZjaHJvbWUyBggAEEUYOTIKCAEQIRgWGB0YHtIBCDYxNTNqMGoxqAIAsAIA&sourceid=chrome&ie=UTF-8");
+		
 
 
+		borderPane.setCenter(webPane);
+		makeHtmlView().setMaxHeight(1000);
+		makeHtmlView().setMaxWidth(200);
 
-
-		Scene scene = new Scene(borderPane, 400, 400 );
+		Scene scene = new Scene(borderPane, 600, 450 );
 		stage.setTitle("g");
 		stage.setScene(scene);
 		stage.show();
