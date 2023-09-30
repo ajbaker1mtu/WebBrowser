@@ -139,24 +139,59 @@ public class CS1122WebBrowser extends Application {
 		tBox.setSpacing(12);
 		tBox.setFillHeight(false);
 		HBox.setMargin(buttonBack, Insets.EMPTY);
-		webEngine.load("https://www.google.com/search?q=how+to+make+a+button+bigger+javafx&oq=how+to+make+a+button+bigger+javafx&gs_lcrp=EgZjaHJvbWUyBggAEEUYOTIKCAEQIRgWGB0YHtIBCDYxNTNqMGoxqAIAsAIA&sourceid=chrome&ie=UTF-8");
+
 		
 
+		search.setOnKeyPressed(keyEvent -> {
+			if (keyEvent.getCode() == KeyCode.ENTER) {
+				String url = search.getText();
+				if (!url.isEmpty()) {
+				  webEngine.load(url);
+				}
+			}
+		});
 
-		borderPane.setCenter(webPane);
-		makeHtmlView().setMaxHeight(1000);
-		makeHtmlView().setMaxWidth(200);
+		buttonBack.setOnAction(actionEvent -> goBack());
+		buttonForward.setOnAction(actionEvent -> goForward());
+	
+
+		
+		view.addEventHandler(MouseEvent.MOUSE_MOVED, event -> {
+		            statusbar.setText(webEngine.getLocation());
+		        });
+		
+		borderPane.setCenter(view);
+		borderPane.setBottom(makeStatusBar());
+
+
+		 webEngine.getLoadWorker().stateProperty().addListener(
+		 	new ChangeListener<State>() {
+		    	public void changed(ObservableValue ov, State oldState, State newState) {
+		    	    if (newState == State.SUCCEEDED) {
+		    	        stage.setTitle(webEngine.getTitle());
+		    	    }
+		    	}
+			 });
 
 		Scene scene = new Scene(borderPane, 600, 450 );
-		stage.setTitle("g");
 		stage.setScene(scene);
 		stage.show();
 
 	}
+	private void goBack() {
+		WebHistory webHistory = webEngine.getHistory();
+		if (webHistory.getCurrentIndex() > 0) {
+	            webHistory.go(-1);
+	        }
+	    }
+	private void goForward() {
+		WebHistory webHistory = webEngine.getHistory();
+		if (webHistory.getCurrentIndex() < webHistory.getMaxSize()) {
+	             webHistory.go(+1);
+	         }
+	     }
 
-
-
-	/**
+		/**
 	 * The main( ) method is ignored in JavaFX applications.
 	 * main( ) serves only as fallback in case the application is launched
 	 * as a regular Java application, e.g., in IDEs with limited FX
