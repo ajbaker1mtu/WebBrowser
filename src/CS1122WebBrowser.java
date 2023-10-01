@@ -164,13 +164,11 @@ public class CS1122WebBrowser extends Application {
 		borderPane.setBottom(makeStatusBar());
 
 
-		 webEngine.getLoadWorker().stateProperty().addListener(
+		webEngine.getLoadWorker().stateProperty().addListener(
 		 	new ChangeListener<State>() {
 		    	public void changed(ObservableValue ov, State oldState, State newState) {
-		    	    if (newState == State.SUCCEEDED) {
-		    	        stage.setTitle(webEngine.getTitle());
-		    	    }
-		    	}
+					stage.setTitle(webEngine.getTitle());
+				}
 			 });
 
 		Scene scene = new Scene(borderPane, 600, 450 );
@@ -199,7 +197,5 @@ public class CS1122WebBrowser extends Application {
 	 *
 	 * @param args the command line arguments
 	 */
-	public static void main(String[] args) {
-		launch(args);
-	}
+	public static void main(String[] args) {launch(args);}
 }
