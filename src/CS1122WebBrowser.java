@@ -39,13 +39,19 @@ import javafx.scene.text.Text;
 /**
  * The main class for CS1122WebBrowser. CS1122WebBrowser constructs the JavaFX window and
  * handles interactions with the dynamic components contained therein.
+ *
+ * Date Last Modified: 10/01/2023
+ * @author Chris Sargent, Alex Baker
+ *
+ * CS1122, Fall 2023
+ * Lab Section 2
  */
 public class CS1122WebBrowser extends Application {
 	// INSTANCE VARIABLES
 	// These variables are included to get you started.
 	private Stage primaryStage = null;
 	private BorderPane borderPane = null;
-  	private WebView view = null;
+	private WebView view = null;
 	private WebEngine webEngine = null;
 	private TextField statusbar = null;
 
@@ -126,12 +132,12 @@ public class CS1122WebBrowser extends Application {
 		tBox.setMaxHeight(75);
 		tBox.setPrefHeight(75);
 
-
+		//makes the background of the search bar and buttons gray
 		tBox.setBackground(
 				new Background(
-				new BackgroundFill(Color.GRAY,
-				CornerRadii.EMPTY,
-				Insets.EMPTY ) ) );
+						new BackgroundFill(Color.GRAY,
+								CornerRadii.EMPTY,
+								Insets.EMPTY ) ) );
 
 		Pane webPane = new Pane(makeHtmlView());
 
@@ -140,56 +146,89 @@ public class CS1122WebBrowser extends Application {
 		tBox.setFillHeight(false);
 		HBox.setMargin(buttonBack, Insets.EMPTY);
 
-		
 
+		//makes the web page load when the enter key is pressed
 		search.setOnKeyPressed(keyEvent -> {
 			if (keyEvent.getCode() == KeyCode.ENTER) {
 				String url = search.getText();
 				if (!url.isEmpty()) {
-				  webEngine.load(url);
+					webEngine.load(url);
 				}
 			}
 		});
 
+		//button actions to ake them do what they are supposed to
 		buttonBack.setOnAction(actionEvent -> goBack());
 		buttonForward.setOnAction(actionEvent -> goForward());
-	
+		buttonHelp.setOnAction(actionEvent -> getHelp());
 
-		
-		view.addEventHandler(MouseEvent.MOUSE_MOVED, event -> {
-		            statusbar.setText(webEngine.getLocation());
-		        });
-		
+
+		//makes the status bar display the url being moused over
+		webEngine.setOnStatusChanged(WebEvent -> {
+			statusbar.setText(WebEvent.getData());
+		});
+
+
 		borderPane.setCenter(view);
 		borderPane.setBottom(makeStatusBar());
 
-
+		//code to set the tile of the application to the title of the webpage
 		webEngine.getLoadWorker().stateProperty().addListener(
-		 	new ChangeListener<State>() {
-		    	public void changed(ObservableValue ov, State oldState, State newState) {
-					stage.setTitle(webEngine.getTitle());
-				}
-			 });
+				new ChangeListener<State>() {
+					public void changed(ObservableValue ov, State oldState, State newState) {
+						if (newState == State.SUCCEEDED) {
+							stage.setTitle(webEngine.getTitle());
+						}
+					}
+				});
 
 		Scene scene = new Scene(borderPane, 600, 450 );
 		stage.setScene(scene);
 		stage.show();
 
+
 	}
+
+	/**
+	 * Returns the web viewer to the previous page.
+	 */
 	private void goBack() {
 		WebHistory webHistory = webEngine.getHistory();
 		if (webHistory.getCurrentIndex() > 0) {
-	            webHistory.go(-1);
-	        }
-	    }
+			webHistory.go(-1);
+		}
+	}
+
+	/**
+	 * Returns the web viewer to the next page if available.
+	 */
 	private void goForward() {
 		WebHistory webHistory = webEngine.getHistory();
-		if (webHistory.getCurrentIndex() < webHistory.getMaxSize()) {
-	             webHistory.go(+1);
-	         }
-	     }
+		if (webHistory.getCurrentIndex() < webHistory.getEntries().size() - 1) {
+			webHistory.go(+1);
+		}
+	}
 
-		/**
+	/**
+	 * Displays the help page.
+	 */
+	private void getHelp() {
+		String help = "<html>\n" +
+				"<body>\n" +
+				"<h1>Help Page</h1>\n" +
+				"<p>Enter a complete and valid URL (i.e. http://www.mtu.edu) in the address bar above and hit the Enter key to navigate to a web page.</p>\n" +
+				"<h2>Created By</h2>\n" +
+				"<ul>\n" +
+				"    <li>Alex Baker</li>\n" +
+				"    <li>Chris Sargent</li>\n" +
+				"</ul>\n" +
+				"<h4>CS1122  Lab Section 2</h4>" +
+				"</body>\n" +
+				"</html>";
+		view.getEngine().loadContent(help);
+	}
+
+	/**
 	 * The main( ) method is ignored in JavaFX applications.
 	 * main( ) serves only as fallback in case the application is launched
 	 * as a regular Java application, e.g., in IDEs with limited FX
@@ -197,5 +236,7 @@ public class CS1122WebBrowser extends Application {
 	 *
 	 * @param args the command line arguments
 	 */
-	public static void main(String[] args) {launch(args);}
+	public static void main(String[] args) {
+		launch(args);
+	}
 }
