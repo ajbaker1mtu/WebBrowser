@@ -54,7 +54,6 @@ public class CS1122WebBrowser extends Application {
 	private WebView view = null;
 	private WebEngine webEngine = null;
 	private TextField statusbar = null;
-
 	// HELPER METHODS
 	/**
 	 * Retrieves the value of a command line argument specified by the index.
